@@ -1,4 +1,4 @@
-package libreofficekit
+package libreoffice
 
 /*
 #cgo CFLAGS: -I ./ -D LOK_USE_UNSTABLE_API
