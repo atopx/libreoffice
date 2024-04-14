@@ -50,6 +50,10 @@ char* get_document_part_name(LibreOfficeKitDocument* pThis, int nPart) {
     return pThis->pClass->getPartName(pThis, nPart);
 };
 
+void set_document_part_mode(LibreOfficeKitDocument* pThis, int nMode) {
+    return pThis->pClass->setPartMode(pThis, nMode);
+};
+
 void initialize_for_rendering(LibreOfficeKitDocument* pThis, const char* pArguments) {
     return pThis->pClass->initializeForRendering(pThis, pArguments);
 };

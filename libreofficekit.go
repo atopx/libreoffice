@@ -7,6 +7,7 @@ package libreoffice
 */
 import "C"
 import (
+	"errors"
 	"fmt"
 	"image"
 	"strconv"
@@ -48,7 +49,7 @@ func NewOffice(path string) (*Office, error) {
 
 	lokit := C.lok_init(cPath)
 	if lokit == nil {
-		return nil, fmt.Errorf("Failed to initialize LibreOfficeKit with path: '%s'", path)
+		return nil, fmt.Errorf("failed to initialize LibreOfficeKit with path: '%s'", path)
 	}
 
 	office.handle = lokit
@@ -77,7 +78,7 @@ func (office *Office) LoadDocument(path string) (*Document, error) {
 	defer C.free(unsafe.Pointer(cPath))
 	handle := C.document_load(office.handle, cPath)
 	if handle == nil {
-		return nil, fmt.Errorf("Failed to load document")
+		return nil, errors.New("failed to load document")
 	}
 	document.handle = handle
 	return document, nil
@@ -139,6 +140,11 @@ func (document *Document) SetPart(part int) {
 	C.set_document_part(document.handle, C.int(part))
 }
 
+// SetPartMode set the document part mode
+func (document *Document) SetPartMode(mode int) {
+	C.set_document_part_mode(document.handle, C.int(mode))
+}
+
 // GetPartName returns current slide title (for presentations) or page title (for text documents)
 func (document *Document) GetPartName(part int) string {
 	cPart := C.int(part)
@@ -174,7 +180,7 @@ func (document *Document) SaveAs(path string, format string, filter string) erro
 	defer C.free(unsafe.Pointer(cFilter))
 	status := C.document_save(document.handle, cPath, cFormat, cFilter)
 	if status != 1 {
-		return fmt.Errorf("Failed to save document")
+		return errors.New("failed to save document")
 	}
 	return nil
 }
