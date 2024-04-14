@@ -16,17 +16,23 @@ go get github.com/atopx/libreoffice@latest
 ## example for convert
 
 ```go
-	office, err := libreoffice.NewOffice("/usr/lib/libreoffice/program")
-	if err != nil {
-		t.Fatal(err)
-	}
-	doc, err := office.LoadDocumentWith("test.doc", "en-US")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer func() {
-		doc.Close()
-		office.Close()
-	}()
-	doc.SaveAs("test.pdf", "pdf", "")
+package main
+
+import "github.com/atopx/libreoffice"
+
+func main() {
+    office, err := libreoffice.NewOffice("/usr/lib/libreoffice/program")
+    if err != nil {
+       t.Fatal(err)
+    }
+    doc, err := office.LoadDocumentWith("test.doc", "en-US")
+    if err != nil {
+        t.Fatal(err)
+    }
+    defer func() {
+        doc.Close()
+        office.Close()
+    }()
+    doc.SaveAs("test.pdf", "pdf", "")
+}
 ```
