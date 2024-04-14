@@ -78,7 +78,24 @@ func (office *Office) LoadDocument(path string) (*Document, error) {
 	defer C.free(unsafe.Pointer(cPath))
 	handle := C.document_load(office.handle, cPath)
 	if handle == nil {
-		return nil, errors.New("failed to load document")
+		return nil, fmt.Errorf("failed to load %s", path)
+	}
+	document.handle = handle
+	return document, nil
+}
+
+// LoadDocumentWith loads a document from a URL with additional options.
+func (office *Office) LoadDocumentWith(path string, options string) (*Document, error) {
+	document := new(Document)
+	cPath := C.CString(path)
+	cOptions := C.CString(options)
+	defer func() {
+		C.free(unsafe.Pointer(cPath))
+		C.free(unsafe.Pointer(cOptions))
+	}()
+	handle := C.document_load_with_options(office.handle, cPath, cOptions)
+	if handle == nil {
+		return nil, fmt.Errorf("failed to load %s [%s]", path, options)
 	}
 	document.handle = handle
 	return document, nil
@@ -173,11 +190,13 @@ func (document *Document) InitializeForRendering(arguments string) {
 // Actual (from libreoffice) error message can be read with Office.GetError
 func (document *Document) SaveAs(path string, format string, filter string) error {
 	cPath := C.CString(path)
-	defer C.free(unsafe.Pointer(cPath))
 	cFormat := C.CString(format)
-	defer C.free(unsafe.Pointer(cFormat))
 	cFilter := C.CString(filter)
-	defer C.free(unsafe.Pointer(cFilter))
+	defer func() {
+		C.free(unsafe.Pointer(cPath))
+		C.free(unsafe.Pointer(cFormat))
+		C.free(unsafe.Pointer(cFilter))
+	}()
 	status := C.document_save(document.handle, cPath, cFormat, cFilter)
 	if status != 1 {
 		return errors.New("failed to save document")

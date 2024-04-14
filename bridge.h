@@ -23,6 +23,10 @@ LibreOfficeKitDocument* document_load(LibreOfficeKit* pThis, const char* pURL) {
     return pThis->pClass->documentLoad(pThis, pURL);
 };
 
+LibreOfficeKitDocument* document_load_with_options(LibreOfficeKit* pThis, const char* pURL, const char* pOptions) {
+    return pThis->pClass->documentLoadWithOptions(pThis, pURL, pOptions);
+};
+
 void destroy_document(LibreOfficeKitDocument* pThis) {
     return pThis->pClass->destroy(pThis);
 };
@@ -30,6 +34,7 @@ void destroy_document(LibreOfficeKitDocument* pThis) {
 void get_document_size(LibreOfficeKitDocument* pThis, long* pWidth, long* pHeight) {
     return pThis->pClass->getDocumentSize(pThis, pWidth, pHeight);
 };
+
 void set_document_part(LibreOfficeKitDocument* pThis, int nPart) {
     return pThis->pClass->setPart(pThis, nPart);
 };
